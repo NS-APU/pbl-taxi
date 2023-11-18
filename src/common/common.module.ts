@@ -4,4 +4,4 @@ import { LineService } from './line.service';
 @Module({
   providers: [LineService],
 })
-export class LineModule {}
+export class CommonModule {}

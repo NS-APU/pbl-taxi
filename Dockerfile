@@ -1,0 +1,22 @@
+# build
+# make,python3,g++ -> node-gyp required
+FROM node:20.9.0-slim AS builder
+WORKDIR /server
+ENV LIB="git curl wget make python3 g++"
+RUN apt update \
+  && apt install -y $LIB --no-install-recommends
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 180000
+COPY . .
+RUN yarn build
+
+# server
+FROM node:20.9.0-slim
+WORKDIR /server
+COPY --from=builder /server/package*.json ./
+COPY --from=builder /server/node_modules ./node_modules
+COPY --from=builder /server/dist ./dist
+#COPY --from=builder /server/src/data-source.ts ./src/
+#COPY --from=builder /server/src/migrations ./src/migrations
+
+CMD ["node", "dist/main.js"]

@@ -1,0 +1,11 @@
+version: "3"
+services:
+  server:
+    build: .
+    container_name: apu-sd-server
+    environment:
+      TZ: ${TZ}
+      SUBSCLIBE_USER_CHANNEL_ACCESS_TOKEN: ${SUBSCLIBE_USER_CHANNEL_ACCESS_TOKEN}
+      SUBSCLIBE_USER_CHANNEL_SECRET: ${SUBSCLIBE_USER_CHANNEL_SECRET}
+    ports:
+      - 3010:3010

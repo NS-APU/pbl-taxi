@@ -173,7 +173,13 @@ export class UserService {
       headercolor: '#27ACB2',
       spot: 'マックスバリュ中央店',
       eta: 4,
-      keywords: ['スーパー', 'マックスバリュ', 'マックスバリュ中央店'],
+      keywords: [
+        'スーパー',
+        'マックスバリュ',
+        'マックスバリュー',
+        'マックスバリュ中央店',
+        'マックスバリュー中央店',
+      ],
     };
 
     return [hospital, market, postoffice];

@@ -6,7 +6,10 @@ import {
   WebhookEvent,
   EventMessage,
   TextEventMessage,
+  Message,
 } from '@line/bot-sdk';
+import * as dayjs from 'dayjs';
+import { TPlaceList } from './flexmessage/place-list/place-list.service';
 
 @Injectable()
 export class UserService {
@@ -54,8 +57,37 @@ export class UserService {
   }
 
   private async textHandler(message: TextEventMessage, replyToken: string) {
+    const now = new Date();
+    const text = message.text;
+
+    const place = await this.getPlaceMock();
+
+    if (text.includes('タクシー') && text.includes('呼')) {
+      const reply: Message = {
+        type: 'text',
+        text: 'どちらに行かれますか？',
+      };
+
+      const placelist = await Promise.all(
+        place.map(async (p): Promise<TPlaceList> => {
+          return {
+            headercolor: p.headercolor,
+            pickupspot: 'ご自宅',
+            pickupdate: now,
+            dropoffspot: p.spot,
+            dropoffdate: dayjs(now).add(p.eta, 'minute').toDate(),
+          };
+        }),
+      );
+      const flexmessage =
+        await this.FlexmessageService.createPlaceListMessage(placelist);
+
+      return await this.LineService.replyMessage(replyToken, [
+        reply,
+        flexmessage,
+      ]);
+    }
     switch (message.text) {
-      case '予約一覧':
       case '予約結果':
         return await this.viewReserveResultDemo(replyToken);
       default:
@@ -63,7 +95,27 @@ export class UserService {
     }
   }
 
-  async viewReserveResultDemo(replyToken: string) {
+  private async getPlaceMock() {
+    const hospital = {
+      headercolor: '#FF6B6E',
+      spot: '由利組合総合病院',
+      eta: 6,
+    };
+    const postoffice = {
+      headercolor: '#FF6B6E',
+      spot: '本荘郵便局',
+      eta: 12,
+    };
+    const market = {
+      headercolor: '#27ACB2',
+      spot: 'マックスバリュ中央店',
+      eta: 4,
+    };
+
+    return [hospital, market, postoffice];
+  }
+
+  private async viewReserveResultDemo(replyToken: string) {
     const reserveresult = {
       pickupspot: 'ご自宅',
       pickupdate: new Date(),

@@ -14,7 +14,7 @@ export class LineService {
     this.client = new Client(config);
   }
 
-  async replyMessage(replyToken: string, message: Message) {
+  async replyMessage(replyToken: string, message: Message | Message[]) {
     await this.client.replyMessage(replyToken, message);
   }
 }

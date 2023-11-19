@@ -50,8 +50,8 @@ export class PlaceListService {
         contents: [
           {
             type: 'text',
-            text: `${pickupspot}行き`,
-            size: 'xxl',
+            text: `${dropoffspot}行き`,
+            size: 'xl',
             color: '#ffffff',
             weight: 'bold',
           },

@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { FlexmessageService } from './flexmessage/flexmessage.service';
 import { LineService } from 'src/common/line.service';
+import { DriverService } from 'src/subscribe-taxi/driver/driver.service';
 import {
   WebhookRequestBody,
   WebhookEvent,
@@ -16,6 +19,8 @@ export class UserService {
   constructor(
     private readonly FlexmessageService: FlexmessageService,
     private readonly LineService: LineService,
+    private readonly DriverService: DriverService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async rootHandler(request: WebhookRequestBody) {
@@ -70,16 +75,30 @@ export class UserService {
     const match = text.match(reserveregex);
 
     if (match?.groups?.dropoffspot) {
-      const pickupspot = place.find((p) =>
+      let pickupspot = place.find((p) =>
         p.keywords.includes(match.groups.pickupspot),
       );
+      const location = await this.cacheManager.get('LOCATION');
+      if (location && !pickupspot) {
+        pickupspot = place.find((p) => p.spot === location.toString());
+      } else if (!location && !pickupspot) {
+        pickupspot = {
+          headercolor: '#FF6B6E',
+          spot: 'ご自宅',
+          eta: 6,
+          keywords: [],
+          address: '〒015-0055 秋田県由利本荘市土谷海老ノ口84-4',
+          latitude: 39.39389,
+          longitude: 140.0736,
+        };
+      }
       const dropoffspot = place.find((p) =>
         p.keywords.includes(match.groups.dropoffspot),
       );
-      console.log(dropoffspot);
       if (!dropoffspot) {
         return await this.failedMessage(replyToken);
       }
+      await this.cacheManager.set('LOCATION', dropoffspot.spot, 0);
 
       switch (match.groups.pickupspot) {
         case 'ご自宅':
@@ -106,6 +125,14 @@ export class UserService {
 
       const flexmessage =
         await this.FlexmessageService.createReserveResultMessage(reserveresult);
+
+      await this.DriverService.notifyDriver({
+        type: 'location',
+        title: '配車が行われました。お迎えに上がってください。',
+        address: pickupspot.address,
+        latitude: pickupspot.latitude,
+        longitude: pickupspot.longitude,
+      });
 
       return await this.LineService.replyMessage(replyToken, [
         reply,
@@ -162,12 +189,18 @@ export class UserService {
         '由利病院',
         '由利組合総合病院',
       ],
+      address: '〒015-0051 秋田県由利本荘市川口家後38',
+      latitude: 39.40527,
+      longitude: 140.06115,
     };
     const postoffice = {
       headercolor: '#FF6B6E',
       spot: '本荘郵便局',
       eta: 12,
       keywords: ['郵便局', '本荘郵便局'],
+      address: '〒015-8799 秋田県由利本荘市給人町43-1',
+      latitude: 39.38866,
+      longitude: 140.04297,
     };
     const market = {
       headercolor: '#27ACB2',
@@ -180,6 +213,9 @@ export class UserService {
         'マックスバリュ中央店',
         'マックスバリュー中央店',
       ],
+      address: '〒015-0834 秋田県由利本荘市岩渕下18',
+      latitude: 39.3911,
+      longitude: 140.05123,
     };
 
     return [hospital, market, postoffice];

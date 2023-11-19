@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { FlexmessageModule } from './flexmessage/flexmessage.module';
 import { CommonModule } from 'src/common/common.module';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
+import { DriverModule } from '../driver/driver.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ConfigService } from '@nestjs/config';
       },
       inject: [ConfigService],
     }),
+    DriverModule,
+    CacheModule.register(),
   ],
   providers: [UserService],
   exports: [UserService],

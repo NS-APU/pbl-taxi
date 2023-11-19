@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Client, Message } from '@line/bot-sdk';
+import { Client, Message, LocationMessage } from '@line/bot-sdk';
 
 export type TLineConfig = {
   channelAccessToken: string;
@@ -16,5 +16,9 @@ export class LineService {
 
   async replyMessage(replyToken: string, message: Message | Message[]) {
     await this.client.replyMessage(replyToken, message);
+  }
+
+  async broadcastMessage(message: Message | Message[]) {
+    await this.client.broadcast(message);
   }
 }

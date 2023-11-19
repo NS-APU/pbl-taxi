@@ -64,7 +64,7 @@ export class ReserveResultService {
                 contents: [
                   {
                     type: 'text',
-                    text: dayjs(pickupdate).format('YYYY/MM/DD/'),
+                    text: dayjs(pickupdate).format('YYYY/MM/DD'),
                     align: 'end',
                   },
                   {
@@ -90,7 +90,7 @@ export class ReserveResultService {
                 contents: [
                   {
                     type: 'text',
-                    text: dayjs(dropoffdate).format('YYYY/MM/DD/'),
+                    text: dayjs(dropoffdate).format('YYYY/MM/DD'),
                     align: 'end',
                   },
                   {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Client, Message } from '@line/bot-sdk';
 
 export type TLineConfig = {
@@ -10,7 +10,7 @@ export type TLineConfig = {
 export class LineService {
   private readonly client: Client;
 
-  constructor(private readonly config: TLineConfig) {
+  constructor(@Inject('LINE_CONFIG') private readonly config: TLineConfig) {
     this.client = new Client(config);
   }
 

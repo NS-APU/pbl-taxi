@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FlexMessage, FlexBubble } from '@line/bot-sdk';
 import * as dayjs from 'dayjs';
 
-export type TReserveList = {
+export type TPlaceList = {
   headercolor: string;
   pickupspot: string;
   pickupdate: Date;
@@ -11,22 +11,22 @@ export type TReserveList = {
 };
 
 @Injectable()
-export class ReserveListService {
-  async convert(reservelist: TReserveList[]): Promise<FlexMessage> {
+export class PlaceListService {
+  async convert(placelist: TPlaceList[]): Promise<FlexMessage> {
     return {
       type: 'flex',
       altText: '行き先一覧メッセージ',
       contents: {
         type: 'carousel',
         contents: await Promise.all(
-          reservelist.map(
-            async (reserve) =>
+          placelist.map(
+            async (place) =>
               await this.bubble(
-                reserve.headercolor,
-                reserve.pickupspot,
-                reserve.pickupdate,
-                reserve.dropoffspot,
-                reserve.dropoffdate,
+                place.headercolor,
+                place.pickupspot,
+                place.pickupdate,
+                place.dropoffspot,
+                place.dropoffdate,
               ),
           ),
         ),
@@ -75,7 +75,7 @@ export class ReserveListService {
                 contents: [
                   {
                     type: 'text',
-                    text: dayjs(pickupdate).format('YYYY/MM/DD/'),
+                    text: dayjs(pickupdate).format('YYYY/MM/DD'),
                     align: 'end',
                   },
                   {
@@ -101,7 +101,7 @@ export class ReserveListService {
                 contents: [
                   {
                     type: 'text',
-                    text: dayjs(dropoffdate).format('YYYY/MM/DD/'),
+                    text: dayjs(dropoffdate).format('YYYY/MM/DD'),
                     align: 'end',
                   },
                   {

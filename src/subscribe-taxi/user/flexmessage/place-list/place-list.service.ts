@@ -61,6 +61,7 @@ export class PlaceListService {
         type: 'box',
         layout: 'vertical',
         contents: [
+          /*
           {
             type: 'box',
             layout: 'horizontal',
@@ -87,6 +88,7 @@ export class PlaceListService {
               },
             ],
           },
+*/
           {
             type: 'box',
             layout: 'horizontal',

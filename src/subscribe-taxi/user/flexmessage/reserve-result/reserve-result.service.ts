@@ -46,10 +46,12 @@ export class ReserveResultService {
           },
         ],
       },
+
       body: {
         type: 'box',
         layout: 'vertical',
         contents: [
+          /*
           {
             type: 'box',
             layout: 'horizontal',
@@ -76,6 +78,7 @@ export class ReserveResultService {
               },
             ],
           },
+*/
           {
             type: 'box',
             layout: 'horizontal',

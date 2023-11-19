@@ -98,7 +98,7 @@ export class UserService {
       };
 
       const reserveresult = {
-        pickupspot: pickupspot?.spot || match.groups.pickupspot,
+        pickupspot: pickupspot ? pickupspot.spot : match.groups.pickupspot,
         pickupdate: now,
         dropoffspot: dropoffspot.spot,
         dropoffdate: dayjs(now).add(dropoffspot.eta, 'minute').toDate(),
@@ -155,7 +155,13 @@ export class UserService {
       headercolor: '#FF6B6E',
       spot: '由利組合総合病院',
       eta: 6,
-      keywords: ['病院', '総合病院', '由利病院', '由利組合総合病院'],
+      keywords: [
+        '病院',
+        '組合病院',
+        '総合病院',
+        '由利病院',
+        '由利組合総合病院',
+      ],
     };
     const postoffice = {
       headercolor: '#FF6B6E',

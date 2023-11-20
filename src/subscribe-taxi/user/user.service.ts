@@ -236,7 +236,16 @@ export class UserService {
       latitude: 39.3911,
       longitude: 140.05123,
     };
+    const communitycenter = {
+      headercolor: '#27ACB2',
+      spot: '新町公民館',
+      eta: 4,
+      keywords: ['公民館', '新町公民館', '新街公民館'],
+      address: '〒015-0011 秋田県由利本荘市石脇石脇73-2',
+      latitude: 39.39814,
+      longitude: 140.04857,
+    };
 
-    return [hospital, market, postoffice];
+    return [hospital, market, postoffice, communitycenter];
   }
 }

@@ -95,15 +95,7 @@ export class UserService {
         pickupspot = place.find((p) => p.spot === location.toString());
       }
       if (!pickupspot) {
-        pickupspot = {
-          headercolor: '#FF6B6E',
-          spot: 'ご自宅',
-          eta: 6,
-          keywords: [],
-          address: '〒015-0055 秋田県由利本荘市土谷海老ノ口84-4',
-          latitude: 39.39389,
-          longitude: 140.0736,
-        };
+        pickupspot = place.find((p) => p.spot === '新町公民館');
       }
 
       let dropoffspot = place.find((p) =>

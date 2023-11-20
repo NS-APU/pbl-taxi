@@ -98,7 +98,7 @@ export class UserService {
 
     // reserve
     const reserveregex =
-      /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ)(.*)(行き|行く)/;
+      /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ|に)(.*)(行き|行く)/;
     const match = text.match(reserveregex);
 
     if (match?.groups?.dropoffspot) {

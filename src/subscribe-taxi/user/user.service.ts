@@ -83,7 +83,7 @@ export class UserService {
 
     // reserve
     const reserveregex =
-      /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ|に)(.*)(行き|行く)/;
+      /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ|に)(.*)(行き|行く|帰る|戻る)/;
     const match = text.match(reserveregex);
 
     if (match?.groups?.dropoffspot) {
@@ -104,12 +104,29 @@ export class UserService {
           longitude: 140.0736,
         };
       }
-      const dropoffspot = place.find((p) =>
+
+      let dropoffspot = place.find((p) =>
         p.keywords.includes(match.groups.dropoffspot),
       );
+      switch (match.groups.dropoffspot) {
+        case '自宅':
+        case '家':
+          dropoffspot = {
+            headercolor: '#FF6B6E',
+            spot: 'ご自宅',
+            eta: 6,
+            keywords: [],
+            address: '〒015-0055 秋田県由利本荘市土谷海老ノ口84-4',
+            latitude: 39.39389,
+            longitude: 140.0736,
+          };
+          break;
+        default:
+      }
       if (!dropoffspot) {
         return await this.failedMessage(replyToken);
       }
+
       await this.cacheManager.set(userid, dropoffspot.spot, 1800000);
 
       switch (match.groups.pickupspot) {

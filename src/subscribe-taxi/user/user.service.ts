@@ -81,21 +81,6 @@ export class UserService {
 
     const place = await this.getPlaceMock();
 
-    // go home
-    if (text.includes('帰り') || text.includes('家')) {
-      const location = await this.cacheManager.get(userid);
-      if (location) {
-        const reply: Message = {
-          type: 'text',
-          text: 'お帰りなさい。お疲れ様でした。',
-        };
-        await this.cacheManager.del('LOCATION');
-        return await this.LineService.replyMessage(replyToken, reply);
-      } else {
-        return await this.failedMessage(replyToken);
-      }
-    }
-
     // reserve
     const reserveregex =
       /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ|に)(.*)(行き|行く)/;

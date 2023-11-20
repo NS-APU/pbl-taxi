@@ -216,7 +216,7 @@ export class UserService {
       headercolor: '#FF6B6E',
       spot: '本荘郵便局',
       eta: 12,
-      keywords: ['郵便局', '本荘郵便局'],
+      keywords: ['郵便局', '本荘郵便局', '本庄郵便局'],
       address: '〒015-8799 秋田県由利本荘市給人町43-1',
       latitude: 39.38866,
       longitude: 140.04297,

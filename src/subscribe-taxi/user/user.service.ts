@@ -38,7 +38,11 @@ export class UserService {
         case 'follow':
           return await this.followHandler(event.replyToken);
         case 'message':
-          return await this.messageHandler(event.message, event.replyToken);
+          return await this.messageHandler(
+            event.source.userId,
+            event.message,
+            event.replyToken,
+          );
         default:
           return;
       }
@@ -54,16 +58,24 @@ export class UserService {
     });
   }
 
-  private async messageHandler(message: EventMessage, replyToken: string) {
+  private async messageHandler(
+    userid: string,
+    message: EventMessage,
+    replyToken: string,
+  ) {
     switch (message.type) {
       case 'text':
-        return await this.textHandler(message, replyToken);
+        return await this.textHandler(userid, message, replyToken);
       default:
         return;
     }
   }
 
-  private async textHandler(message: TextEventMessage, replyToken: string) {
+  private async textHandler(
+    userid: string,
+    message: TextEventMessage,
+    replyToken: string,
+  ) {
     const now = new Date();
     const text = message.text.replace(/\s+/g, '');
 
@@ -71,7 +83,7 @@ export class UserService {
 
     // go home
     if (text.includes('帰り') || text.includes('家')) {
-      const location = await this.cacheManager.get('LOCATION');
+      const location = await this.cacheManager.get(userid);
       if (location) {
         const reply: Message = {
           type: 'text',
@@ -93,7 +105,7 @@ export class UserService {
       let pickupspot = place.find((p) =>
         p.keywords.includes(match.groups.pickupspot),
       );
-      const location = await this.cacheManager.get('LOCATION');
+      const location = await this.cacheManager.get(userid);
       if (location && !pickupspot) {
         pickupspot = place.find((p) => p.spot === location.toString());
       } else if (!location && !pickupspot) {
@@ -113,7 +125,7 @@ export class UserService {
       if (!dropoffspot) {
         return await this.failedMessage(replyToken);
       }
-      await this.cacheManager.set('LOCATION', dropoffspot.spot, 0);
+      await this.cacheManager.set(userid, dropoffspot.spot, 1800000);
 
       switch (match.groups.pickupspot) {
         case 'ご自宅':

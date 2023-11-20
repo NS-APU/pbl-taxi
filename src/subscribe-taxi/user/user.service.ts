@@ -93,7 +93,8 @@ export class UserService {
       const location = await this.cacheManager.get(userid);
       if (location && !pickupspot) {
         pickupspot = place.find((p) => p.spot === location.toString());
-      } else if (!location && !pickupspot) {
+      }
+      if (!pickupspot) {
         pickupspot = {
           headercolor: '#FF6B6E',
           spot: 'ご自宅',
@@ -128,17 +129,6 @@ export class UserService {
       }
 
       await this.cacheManager.set(userid, dropoffspot.spot, 1800000);
-
-      switch (match.groups.pickupspot) {
-        case 'ご自宅':
-        case '自宅':
-        case '家':
-          match.groups.pickupspot = 'ご自宅';
-          break;
-        default:
-          match.groups.pickupspot = '現在地';
-          break;
-      }
 
       const reply: Message = {
         type: 'text',

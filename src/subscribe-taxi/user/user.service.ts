@@ -81,6 +81,8 @@ export class UserService {
 
     const place = await this.getPlaceMock();
 
+    const pickupdelay = 10;
+
     // reserve
     const reserveregex =
       /(?<pickupspot>.+)から(?<dropoffspot>.+)(ま|へ|に)(.*)(行き|行く|帰る|帰り|戻る|戻り)/;
@@ -131,7 +133,9 @@ export class UserService {
         pickupspot: pickupspot ? pickupspot.spot : match.groups.pickupspot,
         pickupdate: now,
         dropoffspot: dropoffspot.spot,
-        dropoffdate: dayjs(now).add(dropoffspot.eta, 'minute').toDate(),
+        dropoffdate: dayjs(now)
+          .add(dropoffspot.eta + pickupdelay, 'minute')
+          .toDate(),
       };
 
       const flexmessage =
@@ -165,7 +169,9 @@ export class UserService {
             pickupspot: '現在地',
             pickupdate: now,
             dropoffspot: p.spot,
-            dropoffdate: dayjs(now).add(p.eta, 'minute').toDate(),
+            dropoffdate: dayjs(now)
+              .add(p.eta + pickupdelay, 'minute')
+              .toDate(),
           };
         }),
       );
@@ -207,7 +213,7 @@ export class UserService {
     const postoffice = {
       headercolor: '#FF6B6E',
       spot: '本荘郵便局',
-      eta: 12,
+      eta: 3,
       keywords: ['郵便局', '本荘郵便局', '本庄郵便局'],
       address: '〒015-8799 秋田県由利本荘市給人町43-1',
       latitude: 39.38866,
@@ -216,7 +222,7 @@ export class UserService {
     const market = {
       headercolor: '#27ACB2',
       spot: 'マックスバリュ中央店',
-      eta: 4,
+      eta: 3,
       keywords: [
         'スーパー',
         'マックスバリュ',
@@ -231,7 +237,7 @@ export class UserService {
     const communitycenter = {
       headercolor: '#27ACB2',
       spot: '新町公民館',
-      eta: 4,
+      eta: 0,
       keywords: ['公民館', '新町公民館', '新街公民館'],
       address: '〒015-0011 秋田県由利本荘市石脇石脇73-2',
       latitude: 39.39814,
